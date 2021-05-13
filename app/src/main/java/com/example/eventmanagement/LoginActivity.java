@@ -13,6 +13,8 @@ import com.example.eventmanagement.API.Api;
 import com.example.eventmanagement.API.IApi;
 import com.example.eventmanagement.Models.LoginModel;
 import com.example.eventmanagement.Models.LoginResponseModel;
+import com.example.eventmanagement.Models.SearchEventRequestModel;
+import com.example.eventmanagement.Models.SearchEventResponseModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -25,6 +27,7 @@ public class LoginActivity extends BaseActivity {
     private IApi apiInterface;
     private TextInputLayout lytEmail, lytPassword;
     private TextInputEditText edtEmail, edtPassword;
+    private SearchEventRequestModel searchEventModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class LoginActivity extends BaseActivity {
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         apiInterface = Api.getAPI();
+
+
     }
 
     @Override
@@ -96,9 +101,9 @@ public class LoginActivity extends BaseActivity {
                 if (response.isSuccessful())
                 {
                     putTokenInSharedPreferences(response.body().getData().getJwToken());
+                    createDefaultSearchEventModel();
+                    searchMyEvents();
 
-                    Intent intent = new Intent(LoginActivity.this, EventsBaseActivity.class);
-                    startActivity(intent);
                 }
                 else if (response.code() == 500)
                 {
@@ -131,5 +136,51 @@ public class LoginActivity extends BaseActivity {
             lyt.setError(getResources().getString(R.string.please_enter_your_password));
             return false;
         }
+    }
+
+
+    private void createDefaultSearchEventModel(){
+        searchEventModel = new SearchEventRequestModel();
+        searchEventModel.setPageNum(1);
+        searchEventModel.setPageSize(10);
+        searchEventModel.setName("");
+        searchEventModel.setFrom("");
+        searchEventModel.setTo("");
+        searchEventModel.setFkChamberId(4);
+        searchEventModel.setEventStatus(1);
+        searchEventModel.setFkEventTopicId(1);
+        searchEventModel.setIsPublic(false);
+        searchEventModel.setIsVirtual(false);
+    }
+
+    private void searchMyEvents(){
+        Call<SearchEventResponseModel> call = apiInterface.searchMyEvents("Bearer " + getToken(),  searchEventModel);
+        call.enqueue(new Callback<SearchEventResponseModel>() {
+            @Override
+            public void onResponse(Call<SearchEventResponseModel> call, Response<SearchEventResponseModel> response) {
+                if (response.isSuccessful())
+                {
+                    SearchEventResponseModel responseModel = response.body();
+                    Constants.MY_EVENTS = responseModel.getEvents();
+                    Toast.makeText(LoginActivity.this, response.message(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(LoginActivity.this, EventsBaseActivity.class);
+                    startActivity(intent);
+
+                }
+                else if (response.code() == 500)
+                {
+                    Toast.makeText(LoginActivity.this, response.message(), Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, response.message(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchEventResponseModel> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
+                call.cancel();
+            }
+        });
     }
 }

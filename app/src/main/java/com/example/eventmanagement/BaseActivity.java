@@ -6,22 +6,25 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 public class BaseActivity extends AppCompatActivity {
-    private SharedPreferences.Editor editor;
-    private String token;
+    private static final String PREF_NAME = "tokenPref";
+
+    public SharedPreferences pref;
+    public SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+        pref = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        editor = pref.edit();
     }
 
     public void putTokenInSharedPreferences(String t){
-        editor = getSharedPreferences("Token", MODE_PRIVATE).edit();
         editor.putString("Token", t);
-        token = t;
+        editor.commit();
     }
 
     public String getToken(){
-        return token;
+        return pref.getString("Token", "");
     }
 }
