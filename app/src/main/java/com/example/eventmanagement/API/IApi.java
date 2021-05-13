@@ -12,6 +12,11 @@ public interface IApi {
 
     @POST("api/Account/authenticate")
     Call<LoginResponseModel> login(
-            @Body Object modelUser
+            @Body Object userModel
+    );
+
+    @POST("api/Events/search-my-events")
+    Call<Object> searchMyEvents(
+            @Body Object searchEventModel
     );
 }

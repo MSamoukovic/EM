@@ -1,5 +1,6 @@
 package com.example.eventmanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -95,6 +96,9 @@ public class LoginActivity extends BaseActivity {
                 if (response.isSuccessful())
                 {
                     putTokenInSharedPreferences(response.body().getData().getJwToken());
+
+                    Intent intent = new Intent(LoginActivity.this, EventsBaseActivity.class);
+                    startActivity(intent);
                 }
                 else if (response.code() == 500)
                 {
