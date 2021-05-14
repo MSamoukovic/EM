@@ -1,28 +1,24 @@
-package com.example.eventmanagement;
+package com.example.eventmanagement.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.SharedPreferences;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.eventmanagement.API.Api;
 import com.example.eventmanagement.API.IApi;
 import com.example.eventmanagement.Adapters.ViewPagerAdapter;
-import com.example.eventmanagement.Models.EventModel;
-import com.example.eventmanagement.Models.SearchEventRequestModel;
-import com.example.eventmanagement.Models.SearchEventResponseModel;
+import com.example.eventmanagement.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.security.MessageDigest;
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class EventsBaseActivity extends BaseActivity {
     private IApi apiInterface;
@@ -40,7 +36,6 @@ public class EventsBaseActivity extends BaseActivity {
         viewPager = findViewById(R.id.viewPager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-
     }
 
     @Override
@@ -85,5 +80,42 @@ public class EventsBaseActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.logoutMenuItem:
+                return true;
+            case R.id.myProfileMenuItem:
+                Intent intent = new Intent(EventsBaseActivity.this, MyProfileActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.top_menu, menu);
+
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.searchIcon));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+          @Override
+          public boolean onQueryTextSubmit(String query) {
+              return false;
+          }
+
+          @Override
+          public boolean onQueryTextChange(String newText) {
+              Toast.makeText(getApplicationContext(), newText, Toast.LENGTH_LONG).show();
+              return false;
+          }
+      });
+
+        return true;
     }
 }

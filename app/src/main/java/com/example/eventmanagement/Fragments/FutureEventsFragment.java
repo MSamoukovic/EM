@@ -1,4 +1,4 @@
-package com.example.Fragments;
+package com.example.eventmanagement.Fragments;
 
 import android.os.Bundle;
 

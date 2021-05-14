@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.Fragments.ActiveEventsFragment;
-import com.example.Fragments.FutureEventsFragment;
+import com.example.eventmanagement.Fragments.ActiveEventsFragment;
+import com.example.eventmanagement.Fragments.FutureEventsFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 

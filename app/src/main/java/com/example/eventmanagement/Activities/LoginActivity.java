@@ -1,4 +1,4 @@
-package com.example.eventmanagement;
+package com.example.eventmanagement.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,12 @@ import android.widget.Toast;
 
 import com.example.eventmanagement.API.Api;
 import com.example.eventmanagement.API.IApi;
+import com.example.eventmanagement.Constants;
 import com.example.eventmanagement.Models.LoginModel;
 import com.example.eventmanagement.Models.LoginResponseModel;
 import com.example.eventmanagement.Models.SearchEventRequestModel;
 import com.example.eventmanagement.Models.SearchEventResponseModel;
+import com.example.eventmanagement.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -138,7 +140,6 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-
     private void createDefaultSearchEventModel(){
         searchEventModel = new SearchEventRequestModel();
         searchEventModel.setPageNum(1);
@@ -146,11 +147,11 @@ public class LoginActivity extends BaseActivity {
         searchEventModel.setName("");
         searchEventModel.setFrom("");
         searchEventModel.setTo("");
-        searchEventModel.setFkChamberId(4);
-        searchEventModel.setEventStatus(1);
-        searchEventModel.setFkEventTopicId(1);
-        searchEventModel.setIsPublic(false);
-        searchEventModel.setIsVirtual(false);
+        searchEventModel.setFkChamberId(null);
+        searchEventModel.setEventStatus(Constants.EVENT_STATUS_ACTIVE);
+        searchEventModel.setFkEventTopicId(null);
+        searchEventModel.setIsPublic(null);
+        searchEventModel.setIsVirtual(null);
     }
 
     private void searchMyEvents(){

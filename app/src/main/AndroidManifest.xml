@@ -13,9 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventManagement"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EventsBaseActivity"></activity>
-        <activity android:name=".BaseActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Activities.MyProfileActivity"></activity>
+        <activity android:name=".Activities.EventsBaseActivity" />
+        <activity android:name=".Activities.BaseActivity" />
+        <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

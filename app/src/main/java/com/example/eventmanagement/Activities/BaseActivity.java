@@ -1,9 +1,11 @@
-package com.example.eventmanagement;
+package com.example.eventmanagement.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import com.example.eventmanagement.R;
 
 public class BaseActivity extends AppCompatActivity {
     private static final String PREF_NAME = "tokenPref";
