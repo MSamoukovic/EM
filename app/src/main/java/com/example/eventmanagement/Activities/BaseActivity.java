@@ -5,28 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.example.eventmanagement.PreferenceManager;
 import com.example.eventmanagement.R;
 
 public class BaseActivity extends AppCompatActivity {
-    private static final String PREF_NAME = "tokenPref";
-
-    public SharedPreferences pref;
-    public SharedPreferences.Editor editor;
+    public String token;
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-        pref = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        editor = pref.edit();
+
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        token = preferenceManager.getToken();
     }
 
-    public void putTokenInSharedPreferences(String t){
-        editor.putString("Token", t);
-        editor.commit();
+    public String getToken() {
+        return token;
     }
 
-    public String getToken(){
-        return pref.getString("Token", "");
-    }
 }

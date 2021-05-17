@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:hint="@string/email"
             android:singleLine="true"
-            android:text="nikola@nikola.com"
+            android:text="borisa.krstic@page.ba"
             android:inputType="textEmailAddress"
             android:layout_height="wrap_content"/>
 
@@ -55,7 +55,7 @@
             android:hint="@string/password"
             android:inputType="textPassword"
             android:singleLine="true"
-            android:text="N-gZ^P*@n+D83v^"
+            android:text="HV!ETsdK@N_6k_$52"
             android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>

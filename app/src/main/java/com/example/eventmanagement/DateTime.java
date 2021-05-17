@@ -25,4 +25,20 @@ public class DateTime {
         }
         return strDate;
     }
+
+    public String getDateForEventFiltering(String dateString){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.");
+        DateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = null;
+        String strDate = "";
+        try {
+            d = sdf.parse(dateString);
+            strDate = newFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return strDate;
+    }
+
+
 }

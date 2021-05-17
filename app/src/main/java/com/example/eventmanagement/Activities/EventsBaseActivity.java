@@ -11,11 +11,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.eventmanagement.API.Api;
-import com.example.eventmanagement.API.IApi;
+import com.example.eventmanagement.Interfaces.IApi;
 import com.example.eventmanagement.Adapters.ViewPagerAdapter;
 import com.example.eventmanagement.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,7 +23,6 @@ public class EventsBaseActivity extends BaseActivity {
     private BottomNavigationView bottomNavView;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +42,13 @@ public class EventsBaseActivity extends BaseActivity {
         bottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if(item.getItemId() == R.id.navActiveEvents){
+                if (item.getItemId() == R.id.navActiveEvents) {
                     viewPager.setCurrentItem(0);
                     return true;
-                }
-                else if(item.getItemId() == R.id.navFutureEvents) {
+                } else if (item.getItemId() == R.id.navFutureEvents) {
                     viewPager.setCurrentItem(1);
                     return true;
-                }
-                else
+                } else
                     return false;
             }
         });
@@ -65,11 +60,11 @@ public class EventsBaseActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case (0):
                         bottomNavView.getMenu().findItem(R.id.navActiveEvents).setChecked(true);
                         break;
-                    case(1):
+                    case (1):
                         bottomNavView.getMenu().findItem(R.id.navFutureEvents).setChecked(true);
                         break;
                 }
@@ -84,7 +79,7 @@ public class EventsBaseActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.logoutMenuItem:
                 return true;
             case R.id.myProfileMenuItem:
@@ -94,6 +89,7 @@ public class EventsBaseActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -103,18 +99,18 @@ public class EventsBaseActivity extends BaseActivity {
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-          @Override
-          public boolean onQueryTextSubmit(String query) {
-              return false;
-          }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-          @Override
-          public boolean onQueryTextChange(String newText) {
-              Toast.makeText(getApplicationContext(), newText, Toast.LENGTH_LONG).show();
-              return false;
-          }
-      });
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
 
         return true;
     }

@@ -1,6 +1,6 @@
 package com.example.eventmanagement.API;
 
-import android.content.SharedPreferences;
+import com.example.eventmanagement.Interfaces.IApi;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

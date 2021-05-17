@@ -12,9 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventmanagement.API.Api;
-import com.example.eventmanagement.API.IApi;
+import com.example.eventmanagement.Interfaces.IApi;
 import com.example.eventmanagement.Constants;
 import com.example.eventmanagement.Models.CurrentUserResponseModel;
+import com.example.eventmanagement.PreferenceManager;
 import com.example.eventmanagement.R;
 
 import java.io.IOException;
@@ -30,11 +31,13 @@ public class MyProfileActivity extends BaseActivity {
     private CircleImageView profileImg;
     private static final int PICK_IMAGE = 1;
     private Uri imageUri;
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
+        preferenceManager = new PreferenceManager(getApplicationContext());
         apiInterface = Api.getAPI();
         txtName = findViewById(R.id.txtName);
         txtEmail = findViewById(R.id.txtEmail);
@@ -74,7 +77,7 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void getCurrentUser(){
-        Call<CurrentUserResponseModel> call = apiInterface.getCurrentUser("Bearer " + getToken());
+        Call<CurrentUserResponseModel> call = apiInterface.getCurrentUser(preferenceManager.getToken());
         call.enqueue(new Callback<CurrentUserResponseModel>() {
             @Override
             public void onResponse(Call<CurrentUserResponseModel> call, Response<CurrentUserResponseModel> response) {
