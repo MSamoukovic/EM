@@ -8,5 +8,5 @@
 
     <item
         android:id="@+id/navFutureEvents"
-        android:title="@string/future_events" />
+        android:title="@string/not_started_events" />
 </menu>

@@ -12,7 +12,7 @@ public class DateTime {
     public DateTime() {
     }
 
-    public String getDate(String datetimeString){
+    public String getDate(String datetimeString) {
         SimpleDateFormat sdf = new SimpleDateFormat(CURRENT_DATE_FORMAT);
         DateFormat newFormat = new SimpleDateFormat(NEW_DATE_FORMAT);
         Date d = null;
@@ -26,7 +26,7 @@ public class DateTime {
         return strDate;
     }
 
-    public String getDateForEventFiltering(String dateString){
+    public String getDateForEventFiltering(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.");
         DateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date d = null;
@@ -39,6 +39,4 @@ public class DateTime {
         }
         return strDate;
     }
-
-
 }

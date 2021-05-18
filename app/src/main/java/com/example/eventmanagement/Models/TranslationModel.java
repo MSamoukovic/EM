@@ -3,7 +3,7 @@ package com.example.eventmanagement.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class LanguageModel {
+public class TranslationModel {
     @SerializedName("value")
     @Expose
     private String value;

@@ -15,9 +15,10 @@ public class ChamberModel {
     @SerializedName("titleId")
     @Expose
     private String titleId;
+
     @SerializedName("nameTranslations")
     @Expose
-    private List<LanguageModel> nameTranslations = null;
+    private String nameTranslations;
 
     public Integer getId() {
         return id;
@@ -43,11 +44,11 @@ public class ChamberModel {
         this.titleId = titleId;
     }
 
-    public List<LanguageModel> getNameTranslations() {
+    public String getNameTranslations() {
         return nameTranslations;
     }
 
-    public void setNameTranslations(List<LanguageModel> nameTranslations) {
+    public void setNameTranslations(String nameTranslations) {
         this.nameTranslations = nameTranslations;
     }
 }

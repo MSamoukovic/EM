@@ -36,7 +36,7 @@ public class SearchDialog extends Dialog {
     private Context context;
     private ImageButton btnCloseDialog;
     private Button btnSubmit;
-    private EditText edtEventName, edtPlace, edtStartDate, edtEndDate;
+    private EditText edtEventName, edtStartDate, edtEndDate;
     private IApi apiInterface;
     private SearchEventRequestModel searchEventModel;
     private PreferenceManager preferenceManager;
@@ -44,10 +44,12 @@ public class SearchDialog extends Dialog {
     private int currentDay, currentYear, currentMonth;
     private String startDate, endDate;
     private DateTime dateTime;
+    private int currentPage;
 
-    public SearchDialog(@NonNull Context context) {
+    public SearchDialog(@NonNull Context context, int currentPage) {
         super(context);
         this.context = context;
+        this.currentPage = currentPage;
         apiInterface = Api.getAPI();
         preferenceManager = new PreferenceManager(context);
         submitSearch = false;
@@ -63,7 +65,6 @@ public class SearchDialog extends Dialog {
         btnCloseDialog = findViewById(R.id.btnClose);
         btnSubmit = findViewById(R.id.btnSubmit);
         edtEventName = findViewById(R.id.edtEventName);
-        edtPlace = findViewById(R.id.edtPlace);
         edtStartDate = findViewById(R.id.edtStartDate);
         edtEndDate = findViewById(R.id.edtEndDate);
         dateTime = new DateTime();
@@ -77,8 +78,11 @@ public class SearchDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 submitSearch = true;
-                createSearchEventModel();
-                searchActiveEvents();
+                if (currentPage == 0)
+                    createSearchEventModel(Constants.EVENT_STATUS_ACTIVE);
+                else
+                    createSearchEventModel(Constants.EVENT_STATUS_NOT_STARTED);
+                searchEvents();
             }
         });
 
@@ -95,11 +99,10 @@ public class SearchDialog extends Dialog {
                 DateDialog datePicker = new DateDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        edtStartDate.setText(dayOfMonth + "." + String.valueOf(month+1) + "." + year + ".");
+                        edtStartDate.setText(dayOfMonth + "." + String.valueOf(month + 1) + "." + year + ".");
                         startDate = dateTime.getDateForEventFiltering(edtStartDate.getText().toString());
-
                     }
-                },Calendar.getInstance().get(Calendar.YEAR),currentMonth,currentDay);
+                }, Calendar.getInstance().get(Calendar.YEAR), currentMonth, currentDay);
                 datePicker.show();
             }
         });
@@ -110,41 +113,43 @@ public class SearchDialog extends Dialog {
                 DateDialog datePicker = new DateDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        edtEndDate.setText(dayOfMonth + "." + String.valueOf(month+1) + "." + year + ".");
+                        edtEndDate.setText(dayOfMonth + "." + String.valueOf(month + 1) + "." + year + ".");
                         endDate = dateTime.getDateForEventFiltering(edtStartDate.getText().toString());
                     }
-                },Calendar.getInstance().get(Calendar.YEAR),currentMonth,currentDay);
+                }, Calendar.getInstance().get(Calendar.YEAR), currentMonth, currentDay);
                 datePicker.show();
             }
         });
-
     }
 
-    private void createSearchEventModel(){
+    private void createSearchEventModel(int eventStatus) {
         searchEventModel = new SearchEventRequestModel();
         searchEventModel.setPageNum(1);
         searchEventModel.setPageSize(10);
+        searchEventModel.setName(edtEventName.getText().toString());
+        searchEventModel.setFrom(startDate);
+        searchEventModel.setTo(endDate);
+        searchEventModel.setEventStatus(eventStatus);
     }
 
-    public boolean isSubmitSearch(){
-        return  submitSearch;
+    public boolean isSubmitSearch() {
+        return submitSearch;
     }
 
-    private void searchActiveEvents(){
+    private void searchEvents() {
         Call<SearchEventResponseModel> call = apiInterface.searchMyEvents(preferenceManager.getToken(), searchEventModel);
         call.enqueue(new Callback<SearchEventResponseModel>() {
             @Override
             public void onResponse(Call<SearchEventResponseModel> call, Response<SearchEventResponseModel> response) {
-                if (response.isSuccessful())
-                {
-                    Constants.FILTERED_ACTIVE_EVENTS =  response.body().getEvents();
+                if (response.isSuccessful()) {
+                    if (searchEventModel.getEventStatus() == Constants.EVENT_STATUS_ACTIVE)
+                        Constants.FILTERED_ACTIVE_EVENTS = response.body().getEvents();
+                    else
+                        Constants.FILTERED_NOT_STARTED_EVENTS = response.body().getEvents();
                     dismiss();
-                }
-                else if (response.code() == 500)
-                {
+                } else if (response.code() == 500) {
                     Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-                }
-                else{
+                } else {
                     Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                 }
             }

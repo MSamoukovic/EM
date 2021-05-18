@@ -8,6 +8,7 @@
     <string name="incorrect_email_or_password">Incorrect email or password</string>
     <string name="active_events">Active events</string>
     <string name="future_events">Future events</string>
+    <string name="not_started_events">Not started events</string>
     <string name="my_profile">My profile</string>
     <string name="logout">Log out</string>
     <string name="select_picture">Select picture</string>

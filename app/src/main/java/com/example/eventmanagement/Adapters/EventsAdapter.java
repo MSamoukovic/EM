@@ -15,36 +15,34 @@ import com.example.eventmanagement.R;
 
 import java.util.List;
 
-import retrofit2.http.POST;
-
-public class ActiveEventsAdapter extends RecyclerView.Adapter<ActiveEventsAdapter.MyViewHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHolder> {
     private Context context;
-    private List<EventModel> activeEvents;
+    private List<EventModel> events;
     private DateTime dateTime;
 
-    public ActiveEventsAdapter(Context context, List<EventModel> activeEvents) {
+    public EventsAdapter(Context context, List<EventModel> events) {
         this.context = context;
-        this.activeEvents = activeEvents;
+        this.events = events;
         dateTime = new DateTime();
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.active_event_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.txtEventName.setText(activeEvents.get(position).getName());
-        holder.txtStartDate.setText(dateTime.getDate(activeEvents.get(position).getStartDate()));
-        holder.txtEndDate.setText(dateTime.getDate(activeEvents.get(position).getEndDate()));
+        holder.txtEventName.setText(events.get(position).getName());
+        holder.txtStartDate.setText(dateTime.getDate(events.get(position).getStartDate()));
+        holder.txtEndDate.setText(dateTime.getDate(events.get(position).getEndDate()));
     }
 
     @Override
     public int getItemCount() {
-        return activeEvents.size();
+        return events.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

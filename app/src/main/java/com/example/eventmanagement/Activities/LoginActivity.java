@@ -12,18 +12,22 @@ import android.widget.Toast;
 import com.example.eventmanagement.API.Api;
 import com.example.eventmanagement.Interfaces.IApi;
 import com.example.eventmanagement.Constants;
+import com.example.eventmanagement.Models.EventModel;
+import com.example.eventmanagement.Models.EventTopicModel;
+import com.example.eventmanagement.Models.SearchEventResponseModel;
+import com.example.eventmanagement.Models.TranslationModel;
 import com.example.eventmanagement.Models.LoginModel;
 import com.example.eventmanagement.Models.LoginResponseModel;
 import com.example.eventmanagement.Models.SearchEventRequestModel;
-import com.example.eventmanagement.Models.SearchEventResponseModel;
 import com.example.eventmanagement.PreferenceManager;
 import com.example.eventmanagement.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
-import java.util.Iterator;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,7 +111,7 @@ public class LoginActivity extends BaseActivity {
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
                 if (response.isSuccessful()) {
                     preferenceManager.setToken(response.body().getData().getJwToken());
-                    searchEvents();
+                    getNotStartedEvents();
 
                 } else if (response.code() == 500) {
                     lytEmail.setError(getResources().getString(R.string.incorrect_email_or_password));
@@ -145,16 +149,39 @@ public class LoginActivity extends BaseActivity {
         searchEventModel.setEventStatus(eventStatus);
     }
 
-    private void searchEvents() {
+    private void getNotStartedEvents() {
+        createSearchEventModel(Constants.EVENT_STATUS_NOT_STARTED);
+        Call<SearchEventResponseModel> call = apiInterface.searchMyEvents(preferenceManager.getToken(), searchEventModel);
+        call.enqueue(new Callback<SearchEventResponseModel>() {
+            @Override
+            public void onResponse(Call<SearchEventResponseModel> call, Response<SearchEventResponseModel> response) {
+                if (response.isSuccessful()) {
+                    Constants.NOT_STARTED_EVENTS = response.body().getEvents();
+                    getActiveEvents();
+
+                } else if (response.code() == 500) {
+                    Toast.makeText(LoginActivity.this, response.message(), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, response.message(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchEventResponseModel> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
+                call.cancel();
+            }
+        });
+    }
+
+    private void getActiveEvents() {
         createSearchEventModel(Constants.EVENT_STATUS_ACTIVE);
         Call<SearchEventResponseModel> call = apiInterface.searchMyEvents(preferenceManager.getToken(), searchEventModel);
         call.enqueue(new Callback<SearchEventResponseModel>() {
             @Override
             public void onResponse(Call<SearchEventResponseModel> call, Response<SearchEventResponseModel> response) {
                 if (response.isSuccessful()) {
-
                     Constants.ACTIVE_EVENTS = response.body().getEvents();
-
                     Toast.makeText(LoginActivity.this, response.message(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LoginActivity.this, EventsBaseActivity.class);
                     startActivity(intent);
@@ -173,4 +200,5 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
+
 }

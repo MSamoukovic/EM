@@ -47,23 +47,15 @@
         android:inputType="none" />
 
     <EditText
-        android:id="@+id/edtPlace"
-        android:background="@drawable/edit_text_style"
-        android:hint="@string/place"
-        android:layout_marginVertical="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <EditText
         android:id="@+id/edtTopic"
         android:background="@drawable/edit_text_style"
         android:hint="@string/topic"
+        android:layout_marginVertical="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnSubmit"
-        android:layout_marginVertical="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/search" />

@@ -17,10 +17,10 @@ public class EventTopicModel {
     private String descriptionTitleId;
     @SerializedName("nameTranslations")
     @Expose
-    private List<LanguageModel> nameTranslations = null;
+    private List<TranslationModel> nameTranslations = null;
     @SerializedName("descriptionTranslations")
     @Expose
-    private List<LanguageModel> descriptionTranslations = null;
+    private List<TranslationModel> descriptionTranslations = null;
 
     public Integer getId() {
         return id;
@@ -46,19 +46,19 @@ public class EventTopicModel {
         this.descriptionTitleId = descriptionTitleId;
     }
 
-    public List<LanguageModel> getNameTranslations() {
+    public List<TranslationModel> getNameTranslations() {
         return nameTranslations;
     }
 
-    public void setNameTranslations(List<LanguageModel> nameTranslations) {
+    public void setNameTranslations(List<TranslationModel> nameTranslations) {
         this.nameTranslations = nameTranslations;
     }
 
-    public List<LanguageModel> getDescriptionTranslations() {
+    public List<TranslationModel> getDescriptionTranslations() {
         return descriptionTranslations;
     }
 
-    public void setDescriptionTranslations(List<LanguageModel> descriptionTranslations) {
+    public void setDescriptionTranslations(List<TranslationModel> descriptionTranslations) {
         this.descriptionTranslations = descriptionTranslations;
     }
 }
