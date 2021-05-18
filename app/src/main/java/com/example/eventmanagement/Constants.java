@@ -1,6 +1,7 @@
 package com.example.eventmanagement;
 
 import com.example.eventmanagement.Models.EventModel;
+import com.example.eventmanagement.Models.EventTopicModel;
 import com.example.eventmanagement.Models.SearchEventResponseModel;
 import com.example.eventmanagement.Models.UserModel;
 
@@ -12,6 +13,8 @@ public class Constants {
     public static List<EventModel> NOT_STARTED_EVENTS;
     public static List<EventModel> FILTERED_ACTIVE_EVENTS;
     public static List<EventModel> FILTERED_NOT_STARTED_EVENTS;
+    public static List<EventTopicModel> ALL_EVENT_TOPICS;
+
     public static final int EVENT_STATUS_FINISHED;
     public static final int EVENT_STATUS_ACTIVE;
     public static final int EVENT_STATUS_NOT_STARTED;
@@ -23,6 +26,8 @@ public class Constants {
         NOT_STARTED_EVENTS = new ArrayList<>();
         FILTERED_ACTIVE_EVENTS = new ArrayList<>();
         FILTERED_NOT_STARTED_EVENTS = new ArrayList<>();
+        ALL_EVENT_TOPICS = new ArrayList<>();
+
         EVENT_STATUS_FINISHED = 0;
         EVENT_STATUS_ACTIVE = 1;
         EVENT_STATUS_NOT_STARTED = 2;

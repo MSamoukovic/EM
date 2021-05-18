@@ -5,32 +5,34 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.eventmanagement.API.Api;
+import com.example.eventmanagement.Activities.EventsBaseActivity;
 import com.example.eventmanagement.Constants;
 import com.example.eventmanagement.DateTime;
 import com.example.eventmanagement.Interfaces.IApi;
+import com.example.eventmanagement.Models.EventTopicModel;
 import com.example.eventmanagement.Models.SearchEventRequestModel;
 import com.example.eventmanagement.Models.SearchEventResponseModel;
 import com.example.eventmanagement.PreferenceManager;
 import com.example.eventmanagement.R;
-import com.google.android.material.textfield.TextInputEditText;
-
-import org.json.JSONObject;
+import com.example.eventmanagement.SpinnerClass;
 
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class SearchDialog extends Dialog {
     private Context context;
@@ -45,6 +47,10 @@ public class SearchDialog extends Dialog {
     private String startDate, endDate;
     private DateTime dateTime;
     private int currentPage;
+    private Integer eventTopicId;
+    private SpinnerClass spinner;
+
+    private Spinner spinnerTopics;
 
     public SearchDialog(@NonNull Context context, int currentPage) {
         super(context);
@@ -64,10 +70,12 @@ public class SearchDialog extends Dialog {
         setContentView(R.layout.search_dialog);
         btnCloseDialog = findViewById(R.id.btnClose);
         btnSubmit = findViewById(R.id.btnSubmit);
+        spinnerTopics = findViewById(R.id.spinnerTopics);
         edtEventName = findViewById(R.id.edtEventName);
         edtStartDate = findViewById(R.id.edtStartDate);
         edtEndDate = findViewById(R.id.edtEndDate);
         dateTime = new DateTime();
+        getAllEventTopics();
     }
 
     @Override
@@ -120,6 +128,20 @@ public class SearchDialog extends Dialog {
                 datePicker.show();
             }
         });
+
+        spinnerTopics.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String eventTopicName = spinnerTopics.getSelectedItem().toString();
+                eventTopicId = spinner.getEventTopicId(eventTopicName);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     private void createSearchEventModel(int eventStatus) {
@@ -130,10 +152,31 @@ public class SearchDialog extends Dialog {
         searchEventModel.setFrom(startDate);
         searchEventModel.setTo(endDate);
         searchEventModel.setEventStatus(eventStatus);
+        searchEventModel.setFkEventTopicId(eventTopicId);
     }
 
     public boolean isSubmitSearch() {
         return submitSearch;
+    }
+
+    private void getAllEventTopics() {
+        Call<List<EventTopicModel>> call = apiInterface.getAllEventTopics(preferenceManager.getToken());
+        call.enqueue(new Callback<List<EventTopicModel>>() {
+            @Override
+            public void onResponse(Call<List<EventTopicModel>> call, Response<List<EventTopicModel>> response) {
+                if (response.isSuccessful()) {
+                    Constants.ALL_EVENT_TOPICS = response.body();
+                    spinner = new SpinnerClass(context, Constants.ALL_EVENT_TOPICS);
+                    spinnerTopics.setAdapter(spinner.getEventTopicsAdapter());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EventTopicModel>> call, Throwable t) {
+                Toast.makeText(context, String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
+                call.cancel();
+            }
+        });
     }
 
     private void searchEvents() {

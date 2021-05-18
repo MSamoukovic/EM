@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.eventmanagement.API.Api;
 import com.example.eventmanagement.Dialogs.SearchDialog;
+import com.example.eventmanagement.Fragments.ActiveEventsFragment;
 import com.example.eventmanagement.Interfaces.IApi;
 import com.example.eventmanagement.Adapters.ViewPagerAdapter;
 import com.example.eventmanagement.R;
@@ -32,7 +33,7 @@ public class EventsBaseActivity extends BaseActivity {
     private ViewPagerAdapter adapter;
     private ImageButton btnSearch, btnMoreOptions;
     private int currentPage;
-    public ICallback icallback;
+    public ICallback icallackActiveEvents, icallbackNotStartedEvents;
 
     public interface ICallback {
         void sendCurrentPage(int page);
@@ -42,8 +43,10 @@ public class EventsBaseActivity extends BaseActivity {
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
 
-        if (fragment instanceof ICallback) {
-            icallback = (ICallback) fragment;
+        if (fragment instanceof ActiveEventsFragment) {
+            icallackActiveEvents = (ICallback) fragment;
+        } else {
+            icallbackNotStartedEvents = (ICallback) fragment;
         }
     }
 
@@ -58,7 +61,6 @@ public class EventsBaseActivity extends BaseActivity {
         viewPager = findViewById(R.id.viewPager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-
     }
 
     @Override
@@ -79,7 +81,8 @@ public class EventsBaseActivity extends BaseActivity {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (searchDialog.isSubmitSearch()) {
-                            icallback.sendCurrentPage(currentPage);
+                            icallackActiveEvents.sendCurrentPage(currentPage);
+                            icallbackNotStartedEvents.sendCurrentPage(currentPage);
                         }
                     }
                 });

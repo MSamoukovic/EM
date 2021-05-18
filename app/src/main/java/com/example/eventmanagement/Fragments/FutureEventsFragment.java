@@ -23,6 +23,7 @@ import java.util.List;
 public class FutureEventsFragment extends Fragment implements EventsBaseActivity.ICallback {
     private RecyclerView recycleViewNotStartedEvents;
     private EventsAdapter adapter;
+    private boolean isViewShown = false;
 
     public FutureEventsFragment() {
     }
@@ -34,6 +35,18 @@ public class FutureEventsFragment extends Fragment implements EventsBaseActivity
         recycleViewNotStartedEvents = view.findViewById(R.id.recycleViewNotStartedEvents);
         setAdapter(Constants.NOT_STARTED_EVENTS);
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() != null) {
+            isViewShown = true;
+            setAdapter(Constants.NOT_STARTED_EVENTS);
+            adapter.notifyDataSetChanged();
+        } else {
+            isViewShown = false;
+        }
     }
 
     private void setAdapter(List<EventModel> notStartedEvents) {
@@ -48,5 +61,7 @@ public class FutureEventsFragment extends Fragment implements EventsBaseActivity
     public void sendCurrentPage(int page) {
         if (page == 1)
             setAdapter(Constants.FILTERED_NOT_STARTED_EVENTS);
+        else
+            setAdapter(Constants.NOT_STARTED_EVENTS);
     }
 }

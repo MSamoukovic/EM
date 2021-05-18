@@ -22,6 +22,7 @@ import java.util.List;
 public class ActiveEventsFragment extends Fragment implements EventsBaseActivity.ICallback {
     private RecyclerView recycleViewActiveEvents;
     private EventsAdapter adapter;
+    private boolean isViewShown = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,8 +30,19 @@ public class ActiveEventsFragment extends Fragment implements EventsBaseActivity
         View view = inflater.inflate(R.layout.fragment_active_events, container, false);
         recycleViewActiveEvents = view.findViewById(R.id.recycleViewActiveEvents);
         setAdapter(Constants.ACTIVE_EVENTS);
-
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() != null) {
+            isViewShown = true;
+            setAdapter(Constants.ACTIVE_EVENTS);
+            adapter.notifyDataSetChanged();
+        } else {
+            isViewShown = false;
+        }
     }
 
     private void setAdapter(List<EventModel> activeEvents) {
@@ -45,5 +57,7 @@ public class ActiveEventsFragment extends Fragment implements EventsBaseActivity
     public void sendCurrentPage(int page) {
         if (page == 0)
             setAdapter(Constants.FILTERED_ACTIVE_EVENTS);
+        else
+            setAdapter(Constants.ACTIVE_EVENTS);
     }
 }
