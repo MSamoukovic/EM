@@ -201,4 +201,9 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

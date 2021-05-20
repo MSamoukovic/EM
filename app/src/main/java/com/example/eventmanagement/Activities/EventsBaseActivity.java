@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.eventmanagement.API.Api;
 import com.example.eventmanagement.Dialogs.SearchDialog;
 import com.example.eventmanagement.Fragments.ActiveEventsFragment;
+import com.example.eventmanagement.Fragments.FutureEventsFragment;
 import com.example.eventmanagement.Interfaces.IApi;
 import com.example.eventmanagement.Adapters.ViewPagerAdapter;
 import com.example.eventmanagement.R;
@@ -45,7 +46,7 @@ public class EventsBaseActivity extends BaseActivity {
 
         if (fragment instanceof ActiveEventsFragment) {
             icallackActiveEvents = (ICallback) fragment;
-        } else {
+        } else if (fragment instanceof FutureEventsFragment) {
             icallbackNotStartedEvents = (ICallback) fragment;
         }
     }
@@ -70,7 +71,7 @@ public class EventsBaseActivity extends BaseActivity {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SearchDialog searchDialog = new SearchDialog(EventsBaseActivity.this, currentPage);
+                SearchDialog searchDialog = new SearchDialog(EventsBaseActivity.this, currentPage, getSupportFragmentManager());
                 searchDialog.show();
 
                 int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);

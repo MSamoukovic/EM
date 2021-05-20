@@ -14,13 +14,25 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="datePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog">
-        <item name="colorAccent">@color/primaryBlue
-        </item>                   <!--header background-->
-        <item name="android:windowBackground">@color/gray2</item>     <!--calendar background-->
-        <item name="android:colorControlActivated">@color/primaryBlue</item> <!--selected day-->
-        <item name="android:textColorPrimary">@color/primaryBlue</item> <!--days of the month-->
-        <item name="android:textColorSecondary">@color/primaryBlue</item>    <!--days of the week-->
+<!--    <style name="datePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog">-->
+<!--        <item name="colorAccent">@color/primaryBlue-->
+<!--        </item>                   &lt;!&ndash;header background&ndash;&gt;-->
+<!--        <item name="android:windowBackground">@color/gray2</item>     &lt;!&ndash;calendar background&ndash;&gt;-->
+<!--        <item name="android:colorControlActivated">@color/primaryBlue</item> &lt;!&ndash;selected day&ndash;&gt;-->
+<!--        <item name="android:textColorPrimary">@color/primaryBlue</item> &lt;!&ndash;days of the month&ndash;&gt;-->
+<!--        <item name="android:textColorSecondary">@color/primaryBlue</item>    &lt;!&ndash;days of the week&ndash;&gt;-->
+<!--    </style>-->
+
+    <style name="CustomMaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen">
+        <item name="materialCalendarHeaderLayout">@style/customHeaderLayout</item>
+        <item name="materialCalendarHeaderToggleButton">@style/Widget.AppTheme.MaterialCalendar.HeaderToggleButton</item>
+    </style>
+    <style name="Widget.AppTheme.MaterialCalendar.HeaderToggleButton" parent="Widget.MaterialComponents.MaterialCalendar.HeaderToggleButton">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="customHeaderLayout" parent="@style/Widget.MaterialComponents.MaterialCalendar.HeaderLayout">
+        <item name="android:background">@color/primaryBlue</item>
     </style>
 
 </resources>

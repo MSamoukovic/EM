@@ -39,4 +39,11 @@ public class DateTime {
         }
         return strDate;
     }
+
+    public String convertLongToString(long longDate) {
+        Date date = new Date(longDate);
+        SimpleDateFormat df2 = new SimpleDateFormat(NEW_DATE_FORMAT);
+        String dateText = df2.format(date);
+        return dateText;
+    }
 }

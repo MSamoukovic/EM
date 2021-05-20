@@ -1,22 +1,21 @@
 package com.example.eventmanagement.Dialogs;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.eventmanagement.API.Api;
-import com.example.eventmanagement.Activities.EventsBaseActivity;
 import com.example.eventmanagement.Constants;
 import com.example.eventmanagement.DateTime;
 import com.example.eventmanagement.Interfaces.IApi;
@@ -26,6 +25,9 @@ import com.example.eventmanagement.Models.SearchEventResponseModel;
 import com.example.eventmanagement.PreferenceManager;
 import com.example.eventmanagement.R;
 import com.example.eventmanagement.SpinnerClass;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
 import java.util.Calendar;
 import java.util.List;
@@ -38,30 +40,28 @@ public class SearchDialog extends Dialog {
     private Context context;
     private ImageButton btnCloseDialog;
     private Button btnSubmit;
-    private EditText edtEventName, edtStartDate, edtEndDate;
+    private EditText edtEventName, edtDateRange;
     private IApi apiInterface;
     private SearchEventRequestModel searchEventModel;
     private PreferenceManager preferenceManager;
     private boolean submitSearch;
-    private int currentDay, currentYear, currentMonth;
-    private String startDate, endDate;
     private DateTime dateTime;
     private int currentPage;
     private Integer eventTopicId;
     private SpinnerClass spinner;
-
+    private FragmentManager fragmentManager;
+    private MaterialDatePicker<Pair<Long, Long>> picker;
+    private String fromDate, toDate;
     private Spinner spinnerTopics;
 
-    public SearchDialog(@NonNull Context context, int currentPage) {
+    public SearchDialog(@NonNull Context context, int currentPage, FragmentManager fragmentManager) {
         super(context);
         this.context = context;
         this.currentPage = currentPage;
         apiInterface = Api.getAPI();
         preferenceManager = new PreferenceManager(context);
         submitSearch = false;
-        currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -72,9 +72,17 @@ public class SearchDialog extends Dialog {
         btnSubmit = findViewById(R.id.btnSubmit);
         spinnerTopics = findViewById(R.id.spinnerTopics);
         edtEventName = findViewById(R.id.edtEventName);
-        edtStartDate = findViewById(R.id.edtStartDate);
-        edtEndDate = findViewById(R.id.edtEndDate);
+        edtDateRange = findViewById(R.id.edtDateRange);
         dateTime = new DateTime();
+
+        if (currentPage == 0) {
+            edtDateRange.setVisibility(View.GONE);
+        }
+
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setCalendarConstraints(limitRange().build());
+        builder.setTheme(R.style.CustomMaterialCalendarTheme);
+        picker = builder.build();
         getAllEventTopics();
     }
 
@@ -101,39 +109,37 @@ public class SearchDialog extends Dialog {
             }
         });
 
-        edtStartDate.setOnClickListener(new View.OnClickListener() {
+        edtDateRange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateDialog datePicker = new DateDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        edtStartDate.setText(dayOfMonth + "." + String.valueOf(month + 1) + "." + year + ".");
-                        startDate = dateTime.getDateForEventFiltering(edtStartDate.getText().toString());
-                    }
-                }, Calendar.getInstance().get(Calendar.YEAR), currentMonth, currentDay);
-                datePicker.show();
+                if (!picker.isVisible()) {
+                    picker.show(fragmentManager, picker.toString());
+                }
             }
         });
 
-        edtEndDate.setOnClickListener(new View.OnClickListener() {
+        picker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
             @Override
-            public void onClick(View v) {
-                DateDialog datePicker = new DateDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        edtEndDate.setText(dayOfMonth + "." + String.valueOf(month + 1) + "." + year + ".");
-                        endDate = dateTime.getDateForEventFiltering(edtStartDate.getText().toString());
-                    }
-                }, Calendar.getInstance().get(Calendar.YEAR), currentMonth, currentDay);
-                datePicker.show();
+            public void onPositiveButtonClick(Pair<Long, Long> selection) {
+                String from = dateTime.convertLongToString(selection.first);
+                String to = dateTime.convertLongToString(selection.second);
+                fromDate = dateTime.getDateForEventFiltering(from);
+                toDate = dateTime.getDateForEventFiltering(to);
             }
+        });
+
+        picker.addOnNegativeButtonClickListener(v -> {
+            edtDateRange.setText(null);
         });
 
         spinnerTopics.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String eventTopicName = spinnerTopics.getSelectedItem().toString();
-                eventTopicId = spinner.getEventTopicId(eventTopicName);
+                if (spinner.getEventTopicId(eventTopicName) == 0)
+                    eventTopicId = null;
+                else
+                    eventTopicId = spinner.getEventTopicId(eventTopicName);
             }
 
             @Override
@@ -141,7 +147,26 @@ public class SearchDialog extends Dialog {
 
             }
         });
+    }
 
+    private CalendarConstraints.Builder limitRange() {
+        CalendarConstraints.Builder constraintsBuilderRange = new CalendarConstraints.Builder();
+        Calendar calendarEnd = Calendar.getInstance();
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int endMonth = 12;
+        int endDate = 31;
+        calendarEnd.set(year + 1, endMonth - 1, endDate);
+
+        long minDate = System.currentTimeMillis();
+        ;
+        long maxDate = calendarEnd.getTimeInMillis();
+
+        constraintsBuilderRange.setStart(minDate);
+        constraintsBuilderRange.setEnd(maxDate);
+        constraintsBuilderRange.setValidator(new DatePickerRangeValidator(minDate, maxDate));
+
+        return constraintsBuilderRange;
     }
 
     private void createSearchEventModel(int eventStatus) {
@@ -149,8 +174,8 @@ public class SearchDialog extends Dialog {
         searchEventModel.setPageNum(1);
         searchEventModel.setPageSize(10);
         searchEventModel.setName(edtEventName.getText().toString());
-        searchEventModel.setFrom(startDate);
-        searchEventModel.setTo(endDate);
+        searchEventModel.setFrom(fromDate);
+        searchEventModel.setTo(toDate);
         searchEventModel.setEventStatus(eventStatus);
         searchEventModel.setFkEventTopicId(eventTopicId);
     }
